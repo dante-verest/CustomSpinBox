@@ -11,6 +11,7 @@ class Widget : public QWidget
     Q_OBJECT
 private:
     CustomSpinBox *m_pCustomSpinBox;
+    int count;
 
 public:
     Widget(QWidget *parent = nullptr);
