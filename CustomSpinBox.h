@@ -6,14 +6,16 @@
 #include <QMap>
 #include <QRegularExpressionValidator>
 
-class CustomSpinBox : public QDateTimeEdit
+class CustomSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
+    Q_PROPERTY(QPair<int, int> currentValue READ currentValue WRITE setCurrentValue NOTIFY currentValueChanged FINAL)
+
 private:
-    const QString timeFormat = "hh:mm";
+    // const QString timeFormat = "hh:mm";
     QString sign;
-    QString timeFormatWithSign;
-    int stateUTC; // 1 when up, -1 when down, 0 not defined
+    // QString timeFormatWithSign;
+    // int stateUTC; // 1 when up, -1 when down, 0 not defined
     const QMap<QPair<int, int>, QString> utcZones = {
         {{-12, 00}, "Etc/GMT+12"},
         {{-11, 00}, "Etc/GMT+11"},
@@ -55,9 +57,9 @@ private:
         {{+14, 00}, "Etc/GMT-14"}
     };
 
-    QRegularExpressionValidator* m_pRegExpValidator;
+    // void step(int &hour, int &minute, bool up);
 
-    void step(int &hour, int &minute, bool up);
+    QPair<int, int> m_currentValue;
 
 public:
     CustomSpinBox(QWidget *parent = nullptr);
@@ -65,6 +67,15 @@ public:
     QValidator::State validate(QString &input, int &pos) const override;
     void fixup(QString &input) const override;
     bool eventFilter(QObject *watched, QEvent *event) override;
+    void stepBy(int steps) override;
+    void stepDown();
+    void stepUp();
+
+    QPair<int, int> currentValue() const;
+    void setCurrentValue(const QPair<int, int> &newCurrentValue = {+3, 00});
+
+signals:
+    void currentValueChanged();
 };
 
 #endif // CUSTOMSPINBOX_H
