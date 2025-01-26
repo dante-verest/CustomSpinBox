@@ -4,7 +4,23 @@
 #include <QSpinBox>
 #include <QTimeEdit>
 #include <QMap>
-#include <QRegularExpressionValidator>
+// #include <unordered_map>
+#include <map>
+// #include <QHash>
+// #include <QSet>
+
+// template<typename _T1, typename _T2>
+// _GLIBCXX_CONSTEXPR bool
+// operator<(const QPair<_T1, _T2>& __x, const QPair<_T1, _T2>& __y)
+// {
+//     qDebug() << "operator <";
+//     if(__x.first < 0 && __y.first < 0)
+//         return __x.first < __y.first
+//                || (!(__y.first < __x.first) && !(__x.second < __y.second));
+//     else
+//         return __x.first < __y.first
+//                || (!(__y.first < __x.first) && __x.second < __y.second);
+// }
 
 class CustomSpinBox : public QAbstractSpinBox
 {
@@ -16,6 +32,61 @@ private:
     QString sign;
     // QString timeFormatWithSign;
     // int stateUTC; // 1 when up, -1 when down, 0 not defined
+    // struct hash_pair {
+    //     template <class T1, class T2>
+    //     size_t operator()(const std::pair<T1, T2>& p) const
+    //     {
+    //         // Hash the first element
+    //         size_t hash1 = std::hash<T1>{}(p.first);
+    //         // Hash the second element
+    //         size_t hash2 = std::hash<T2>{}(p.second);
+    //         // Combine the two hash values
+    //         // что это за смещения вообще?
+    //         return hash1
+    //                ^ (hash2 + 0x9e3779b9 + (hash1 << 6)
+    //                   + (hash1 >> 2));
+    //     }
+    // };
+
+    // template<typename _T1, typename _T2>
+    // inline _GLIBCXX_CONSTEXPR bool
+    // operator==(const QPair<_T1, _T2>& __x, const QPair<_T1, _T2>& __y)
+    // {
+    //     return __x.first == __y.first && __x.second == __y.second;
+    // }
+
+    /// Uses @c operator== to find the result.
+    // template<typename _T1, typename _T2>
+    // inline _GLIBCXX_CONSTEXPR bool
+    // operator!=(const QPair<_T1, _T2>& __x, const QPair<_T1, _T2>& __y)
+    // {
+    //     return !(__x == __y);
+    // }
+
+    /// Uses @c operator< to find the result.
+    // template<typename _T1, typename _T2>
+    // inline _GLIBCXX_CONSTEXPR bool
+    // operator>(const QPair<_T1, _T2>& __x, const QPair<_T1, _T2>& __y)
+    // {
+    //     return __y < __x;
+    // }
+
+    /// Uses @c operator< to find the result.
+    // template<typename _T1, typename _T2>
+    // inline _GLIBCXX_CONSTEXPR bool
+    // operator<=(const QPair<_T1, _T2>& __x, const QPair<_T1, _T2>& __y)
+    // {
+    //     return !(__y < __x);
+    // }
+
+    /// Uses @c operator< to find the result.
+    // template<typename _T1, typename _T2>
+    // inline _GLIBCXX_CONSTEXPR bool
+    // operator>=(const QPair<_T1, _T2>& __x, const QPair<_T1, _T2>& __y)
+    // {
+    //     return !(__x < __y);
+    // }
+
     const QMap<QPair<int, int>, QString> utcZones = {
         {{-12, 00}, "Etc/GMT+12"},
         {{-11, 00}, "Etc/GMT+11"},
@@ -56,8 +127,6 @@ private:
         {{+13, 45}, "Patific/Chatham"},
         {{+14, 00}, "Etc/GMT-14"}
     };
-
-    // void step(int &hour, int &minute, bool up);
 
     QPair<int, int> m_currentValue;
 

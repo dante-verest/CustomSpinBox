@@ -2,49 +2,11 @@
 
 #include <QLineEdit>
 #include <QKeyEvent>
-// #include <QDateTimeEdit>
+#include <QDateTime>
 
 /*
  * Нужно смотреть qdatetime.cpp и qdatetimeedit.cpp
  */
-
-// void CustomSpinBox::step(int &hour, int &minute, bool up)
-// {
-//     switch(hour) {
-//     case -9:
-//         if(minute == 30) {
-//             if(up) {
-//                 stepBy(29);
-//             } else {
-//                 stepBy(-29);
-//             }
-//         }
-//         break;
-//     case -3:
-
-//         break;
-//     case +3:
-
-//         break;
-//     case +5:
-
-//         break;
-//     case +6:
-
-//         break;
-//     case +8:
-
-//         break;
-//     case +10:
-
-//         break;
-//     case +13:
-
-//         break;
-//     default:
-//         break;
-//     }
-// }
 
 CustomSpinBox::CustomSpinBox(QWidget *parent)
     : QAbstractSpinBox{parent}
@@ -65,17 +27,24 @@ CustomSpinBox::CustomSpinBox(QWidget *parent)
     this->lineEdit()->setReadOnly(true);
 
     // QDateTime local(QDateTime::currentDateTime());
-    // qDebug() << "Local time is:" << local;
-    // QDateTime UTC(local);
-    // UTC.setTimeSpec(Qt::OffsetFromUTC);
-    // qDebug() << "UTC time is:" << UTC;
-    // qDebug() << "There are" << local.secsTo(UTC) << "seconds difference between the datetimes.";
-    // // UTC.timeRepresentation();
-    // qDebug() << "offset" << UTC.offsetFromUtc();
-    // // UTC.setOffsetFromUtc(-7200);
-    // qDebug() << "offset" << UTC.offsetFromUtc();
-    // qDebug() << "There are" << local.secsTo(UTC) << "seconds difference between the datetimes. 2";
-    // qDebug() << "2 UTC time is:" << UTC.toOffsetFromUtc(-7200);
+    QDateTime local(QDate(2025, 1, 26), QTime(3, 0), Qt::UTC);
+    qDebug() << "Local time 1 is:" << local;
+    // local.setOffsetFromUtc(0);
+    // qDebug() << "Local time 2 is:" << local;
+    // local.toUTC().setOffsetFromUtc(10800);
+    QDateTime withUTCoffset = local.toOffsetFromUtc(10800);
+    qDebug() << "Local time 3 is:" << withUTCoffset;
+
+    QDateTime UTC(withUTCoffset);
+    UTC.setTimeSpec(Qt::OffsetFromUTC);
+    qDebug() << "UTC time is:" << UTC;
+    qDebug() << "There are" << withUTCoffset.secsTo(UTC) << "seconds difference between the datetimes.";
+    // UTC.timeRepresentation();
+    qDebug() << "offset" << UTC.offsetFromUtc();
+    // UTC.setOffsetFromUtc(-7200);
+    qDebug() << "offset" << UTC.offsetFromUtc();
+    qDebug() << "There are" << withUTCoffset.secsTo(UTC) << "seconds difference between the datetimes. 2";
+    qDebug() << "2 UTC time is:" << UTC.toOffsetFromUtc(-7200);
 }
 
 QValidator::State CustomSpinBox::validate(QString &input, int &pos) const
@@ -212,13 +181,15 @@ void CustomSpinBox::stepBy(int steps)
     QMap<QPair<int, int>, QString>::const_iterator mapIterator = this->utcZones.find(this->m_currentValue);
     if(steps == -1) {
         --mapIterator;
-        if(mapIterator == this->utcZones.cbegin())
+        if(mapIterator == this->utcZones.cbegin()) {
             mapIterator = this->utcZones.find(this->utcZones.lastKey());
+        }
         this->setCurrentValue(mapIterator.key());
     } else if(steps == 1) {
         ++mapIterator;
-        if(mapIterator == this->utcZones.cend())
+        if(mapIterator == this->utcZones.cend()) {
             mapIterator = this->utcZones.find(this->utcZones.firstKey());
+        }
         this->setCurrentValue(mapIterator.key());
     }
 }
